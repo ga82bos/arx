@@ -91,9 +91,9 @@ public class RiskEstimateBuilderInterruptible {
         return parent.getProgress();
     }
 
-    public RiskModelAttributes getAttributeRisks() throws InterruptedException {
+    public RiskModelAttributes getAttributeRisks(boolean newMethod) throws InterruptedException {
         try {
-            return parent.getAttributeRisks();
+            return parent.getAttributeRisks(newMethod);
         } catch (ComputationInterruptedException e) {
             throw new InterruptedException("Computation interrupted");
         }

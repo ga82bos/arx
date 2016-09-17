@@ -57,6 +57,9 @@ public class DataHandleInternal {
         return handle.getAttributeName(column);
     }
 
+    public DataHandle getData() {
+        return handle;
+    }
     /**
      * 
      *

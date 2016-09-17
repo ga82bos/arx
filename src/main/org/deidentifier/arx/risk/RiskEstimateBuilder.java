@@ -258,9 +258,9 @@ public class RiskEstimateBuilder {
                 false);
     }
 
-    public RiskModelAttributes getAttributeRisks() {
+    public RiskModelAttributes getAttributeRisks(boolean newMethod) {
         progress.value = 0;
-        return getQuasiIdentifiers();
+            return getQuasiIdentifiers(newMethod);
     }
 
     /**
@@ -304,10 +304,11 @@ public class RiskEstimateBuilder {
         return new RiskModelSampleUniqueness(getEquivalenceClassModel());
     }
 
-    private RiskModelAttributes getQuasiIdentifiers() {
+    private RiskModelAttributes getQuasiIdentifiers(boolean newMethod) {
         progress.value = 0;
-        return new RiskModelAttributes(this.population, this.handle, this.identifiers, this.stop, progress, this.solverconfig, this.arxconfig);
+        return new RiskModelAttributes(this.population, this.handle, this.identifiers, this.stop, progress, this.solverconfig, this.arxconfig, newMethod);
     }
+
 
     /**
      * Returns a model of the equivalence classes in this data set
@@ -356,4 +357,6 @@ public class RiskEstimateBuilder {
             this.stop.value = true;
         }
     }
+
+
 }

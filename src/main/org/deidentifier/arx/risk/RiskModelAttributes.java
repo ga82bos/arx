@@ -35,7 +35,7 @@ import org.deidentifier.arx.exceptions.ComputationInterruptedException;
 
 /**
  * A class for attribute-related risks
- *
+ * 
  * This class is based on the work stated in R. Motwani et al., “Efficient algorithms for masking and finding quasi-identifiers,” Proc. VLDB Conf., 2007.
  * Interdisciplinary training
  *
@@ -49,16 +49,18 @@ public class RiskModelAttributes {
     private DataHandleInternal handle;
     private ARXSolverConfiguration solverconfig;
     private ARXConfiguration arxconfig;
+    private boolean newMethod;
 
     /**
      * Creates a new instance
      */
-    RiskModelAttributes(ARXPopulationModel population, DataHandleInternal handle, Set<String> identifiers, WrappedBoolean stop, WrappedInteger percentageDone, ARXSolverConfiguration solverconfig, ARXConfiguration arxconfig) {
+    RiskModelAttributes(ARXPopulationModel population, DataHandleInternal handle, Set<String> identifiers, WrappedBoolean stop, WrappedInteger percentageDone, ARXSolverConfiguration solverconfig, ARXConfiguration arxconfig, boolean newMethod) {
         this.population = population;
         this.handle = handle;
         this.stop = stop;
         this.solverconfig = solverconfig;
         this.arxconfig = arxconfig;
+        this.newMethod = newMethod;
 
         // Compute risk estimates for all elements in the power set
         Set<Set<String>> powerset = getPowerSet(identifiers);
@@ -143,14 +145,31 @@ public class RiskModelAttributes {
     private RiskProvider getRiskProvider(final Set<String> attributes,
                                          final WrappedBoolean stop) {
 
-        // get new Histogram from attributes
-        RiskEstimateBuilder builder = new RiskEstimateBuilder(population, handle, attributes, stop, solverconfig, arxconfig);
 
-        // get new Histogram
-        RiskModelHistogram newEqClasses = builder.getEquivalenceClassModel();
+        double alphaDistinctionCalc;
+        double alphaSeparationCalc;
+        if (newMethod) {
+            // get new Histogram from attributes
+            RiskEstimateBuilder builder = new RiskEstimateBuilder(population, handle, attributes, stop, solverconfig, arxconfig);
 
-        final double alphaDistinction = getAlphaDistinction(newEqClasses);
-        final double alphaSeparation = getAlphaSeparation(newEqClasses);
+            // get new Histogram
+            RiskModelHistogram newEqClasses = builder.getEquivalenceClassModel();
+
+            alphaDistinctionCalc = getAlphaDistinction(newEqClasses);
+            alphaSeparationCalc = getAlphaSeparation(newEqClasses);
+        } else {
+            // get new Histogram from attributes
+            RiskEstimateBuilder builder = new RiskEstimateBuilder(population, handle, attributes, stop, solverconfig, arxconfig);
+            // get new Histogram
+            RiskModelHistogram newEqClasses = builder.getEquivalenceClassModel();
+
+            RiskModelQI riskModelQI = new RiskModelQI(handle.getData(), attributes);
+            alphaDistinctionCalc = riskModelQI.getAlphaDistinct();
+            alphaSeparationCalc = riskModelQI.getAlphaSeparation();
+
+        }
+        final double alphaDistinction = alphaDistinctionCalc;
+        final double alphaSeparation = alphaSeparationCalc;
 
         // Return a provider
         return new RiskProvider() {
