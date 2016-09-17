@@ -118,7 +118,7 @@ public class Example29 extends Example {
     private static void analyzeAttributes(DataHandle handle) {
         ARXPopulationModel populationmodel = ARXPopulationModel.create(Region.USA);
         RiskEstimateBuilder builder = handle.getRiskEstimator(populationmodel);
-        RiskModelAttributes riskmodel = builder.getAttributeRisks();
+        RiskModelAttributes riskmodel = builder.getAttributeRisks(true);
         for (QuasiIdentifierRisk risk : riskmodel.getAttributeRisks()) {
             System.out.println("   * Score: " + /*risk.getFractionOfUniqueTuples() +*/ ", Identifier: " + risk.getIdentifier());
         }

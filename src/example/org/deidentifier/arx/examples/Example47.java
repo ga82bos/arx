@@ -41,7 +41,7 @@ public class Example47 extends Example {
     private static void analyzeAttributes(DataHandle handle) {
         ARXPopulationModel populationmodel = ARXPopulationModel.create(ARXPopulationModel.Region.USA);
         RiskEstimateBuilder builder = handle.getRiskEstimator(populationmodel);
-        RiskModelAttributes riskmodel = builder.getAttributeRisks();
+        RiskModelAttributes riskmodel = builder.getAttributeRisks(true);
 
         // output
         printPrettyTable(riskmodel.getAttributeRisks());
